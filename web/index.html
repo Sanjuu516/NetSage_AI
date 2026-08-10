@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NetSage AI - Cisco Packet Tracer Network Troubleshooting Assistant with Mandatory Human-in-the-Loop Review">
+  <title>NetSage AI | Applied Network Troubleshooting Assistant</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for Interactive Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>NetSage AI</h1>
+          <div class="subtitle">Packet Tracer Lab Troubleshooter &bull; Human-in-the-Loop</div>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" role="tablist" aria-label="Main Navigation">
+        <button class="nav-btn active" id="tab-btn-dashboard" onclick="switchTab('dashboard')">
+          📊 Dashboard
+        </button>
+        <button class="nav-btn" id="tab-btn-explorer" onclick="switchTab('explorer')">
+          📁 Case Explorer
+        </button>
+        <button class="nav-btn" id="tab-btn-sandbox" onclick="switchTab('sandbox')">
+          ⚡ Live Diagnosis
+        </button>
+        <button class="nav-btn" id="tab-btn-review" onclick="switchTab('review')">
+          🛡️ Human Review Log
+        </button>
+        <button class="nav-btn" id="tab-btn-demo" onclick="switchTab('demo')">
+          🎬 Guided Lab Demo
+        </button>
+      </nav>
+
+      <div class="header-status">
+        <div class="status-pill">
+          <div class="pulse-dot"></div>
+          <span>Safety Guard Active</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-content">
+
+    <!-- ================= TAB 1: DASHBOARD & ANALYTICS ================= -->
+    <section id="tab-dashboard" class="tab-pane active">
+      <!-- Metric Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Total Lab Cases</span>
+            <span class="metric-icon">📦</span>
+          </div>
+          <div class="metric-value" id="kpi-total-cases">32</div>
+          <div class="metric-sub">Across 8 Cisco Domains</div>
+        </div>
+
+        <div class="metric-card emerald">
+          <div class="metric-header">
+            <span class="metric-title">AI / Human Agreement</span>
+            <span class="metric-icon">🤝</span>
+          </div>
+          <div class="metric-value" id="kpi-agreement-rate">93.8%</div>
+          <div class="metric-sub">Calibrated on Ground Truth</div>
+        </div>
+
+        <div class="metric-card amber">
+          <div class="metric-header">
+            <span class="metric-title">Rule Checker Coverage</span>
+            <span class="metric-icon">⚙️</span>
+          </div>
+          <div class="metric-value" id="kpi-rule-coverage">100%</div>
+          <div class="metric-sub">Deterministic Pre-Checks</div>
+        </div>
+
+        <div class="metric-card purple">
+          <div class="metric-header">
+            <span class="metric-title">Responsible AI Catches</span>
+            <span class="metric-icon">🛡️</span>
+          </div>
+          <div class="metric-value" id="kpi-rai-catches">6</div>
+          <div class="metric-sub">Critical Outages Prevented</div>
+        </div>
+      </div>
+
+      <!-- Interactive Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h2 class="chart-title">🏷️ Case Distribution by Domain Concept</h2>
+          <div class="chart-wrapper">
+            <canvas id="chart-concepts"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h2 class="chart-title">🌐 Fault Distribution by OSI Layer</h2>
+          <div class="chart-wrapper">
+            <canvas id="chart-osi"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h2 class="chart-title">⚠️ Fault Severity Breakdown</h2>
+          <div class="chart-wrapper">
+            <canvas id="chart-severity"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h2 class="chart-title">⚖️ Human Review Oversight Breakdown</h2>
+          <div class="chart-wrapper">
+            <canvas id="chart-reviews"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Architecture Callout -->
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">💡 NetSage AI Dual-Engine Operational Architecture</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; font-size: 0.9rem;">
+          <div style="background: rgba(0, 188, 235, 0.05); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 3px solid var(--cisco-blue);">
+            <strong style="color: var(--cisco-blue); display: block; margin-bottom: 0.5rem;">1. Deterministic Rule Checker</strong>
+            Instant programmatic scanning of syntax, masks, duplicate IPs, SVI status, native VLAN tags, and routing loops before AI inference.
+          </div>
+          <div style="background: rgba(16, 185, 129, 0.05); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-emerald);">
+            <strong style="color: var(--accent-emerald); display: block; margin-bottom: 0.5rem;">2. AI Diagnostic Reasoner</strong>
+            Synthesizes complex multi-device logs into structured JSON root-cause explanations with quoted line evidence and confidence calibration.
+          </div>
+          <div style="background: rgba(245, 158, 11, 0.05); padding: 1.25rem; border-radius: var(--radius-sm); border-left: 3px solid var(--accent-amber);">
+            <strong style="color: var(--accent-amber); display: block; margin-bottom: 0.5rem;">3. Human-in-the-Loop Review</strong>
+            Every remediation command must be validated, edited, or approved by an engineer, eliminating hallucinated or dangerous CLI commands.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: CASE EXPLORER ================= -->
+    <section id="tab-explorer" class="tab-pane">
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">📁 Packet Tracer Troubleshooting Case Dataset (32 Cases)</div>
+          <span style="font-size: 0.85rem; color: var(--text-dim);">Real-world Cisco lab topologies & show commands</span>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <div class="search-box">
+            <input type="text" id="search-cases" class="search-input" placeholder="🔍 Search by symptom, fault, or command..." oninput="filterCases()">
+          </div>
+          <div class="filter-selects">
+            <select id="filter-concept" class="select-input" onchange="filterCases()">
+              <option value="ALL">All Concepts (All 8 Domains)</option>
+              <option value="VLAN">VLAN & Trunking</option>
+              <option value="GATEWAY">Default Gateway / IP</option>
+              <option value="DHCP">DHCP & Relay</option>
+              <option value="DNS">DNS Services</option>
+              <option value="ROUTING">Routing / OSPF / RIP</option>
+              <option value="ACL">Access Control Lists</option>
+              <option value="NAT">NAT / PAT Overload</option>
+              <option value="WIRELESS">Wireless & Security</option>
+              <option value="SWITCHING">Layer 2 Switching</option>
+            </select>
+
+            <select id="filter-severity" class="select-input" onchange="filterCases()">
+              <option value="ALL">All Severities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+
+            <select id="filter-layer" class="select-input" onchange="filterCases()">
+              <option value="ALL">All OSI Layers</option>
+              <option value="Layer 1">Layer 1 - Physical</option>
+              <option value="Layer 2">Layer 2 - Data Link</option>
+              <option value="Layer 3">Layer 3 - Network</option>
+              <option value="Layer 4">Layer 4 - Transport</option>
+              <option value="Layer 7">Layer 7 - Application</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cases Table -->
+        <div class="table-responsive">
+          <table class="netsage-table" id="table-cases">
+            <thead>
+              <tr>
+                <th>Case ID</th>
+                <th>Title & Symptom</th>
+                <th>Domain</th>
+                <th>OSI Layer</th>
+                <th>Severity</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cases-tbody">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: LIVE DIAGNOSIS SANDBOX ================= -->
+    <section id="tab-sandbox" class="tab-pane">
+      <div class="sandbox-grid">
+        <!-- Input Column -->
+        <div class="glass-panel">
+          <div class="panel-header">
+            <div class="panel-title">⚡ Interactive Lab Input Sandbox</div>
+            <button class="btn-secondary" onclick="loadSampleCaseIntoSandbox()">Load Preset Case</button>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="sandbox-symptom">Observed Host / Network Symptom:</label>
+            <textarea id="sandbox-symptom" class="code-textarea" style="min-height: 80px;" placeholder="e.g. PC-A in Sales cannot ping Sales Server 192.168.10.50"></textarea>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="sandbox-topology">Topology Notes & Architecture:</label>
+            <input type="text" id="sandbox-topology" class="search-input" placeholder="e.g. Switch-1 Fa0/1 connects to PC-A, Fa0/2 connects to Server. Sales is VLAN 10.">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="sandbox-show-outputs">Cisco IOS Show-Command Outputs:</label>
+            <textarea id="sandbox-show-outputs" class="code-textarea" style="min-height: 220px;" placeholder="Paste Cisco IOS outputs (e.g. show vlan brief, show ip interface brief, show ip route, show access-lists)..."></textarea>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <button id="btn-run-diag" class="btn-primary" onclick="runLiveDiagnosis()">
+              <span>🚀 Run NetSage AI Diagnosis</span>
+            </button>
+            <button class="btn-secondary" onclick="clearSandbox()">Clear</button>
+          </div>
+        </div>
+
+        <!-- Output / Diagnosis Column -->
+        <div>
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">🔍 NetSage Diagnostic Analysis</div>
+              <span id="diag-status-badge" class="badge badge-vlan">Awaiting Input</span>
+            </div>
+
+            <div id="diag-results-placeholder" style="text-align: center; padding: 3rem 1rem; color: var(--text-dim);">
+              <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">🔬</div>
+              <h3>No Diagnosis Executed</h3>
+              <p style="font-size: 0.85rem; margin-top: 0.5rem;">Select a case from the Case Explorer or enter custom symptom & show outputs to run AI and deterministic rule checks.</p>
+            </div>
+
+            <div id="diag-results-content" style="display: none;">
+              <!-- Deterministic Findings Box -->
+              <div id="diag-rules-box" class="output-card" style="border-left: 3px solid var(--accent-amber);">
+                <div class="output-header">
+                  <strong style="color: var(--accent-amber);">⚙️ Deterministic Rule Findings</strong>
+                  <span id="rule-count-badge" class="badge severity-high">0 Rules Triggered</span>
+                </div>
+                <div id="diag-rules-list"></div>
+              </div>
+
+              <!-- AI Reasoning Box -->
+              <div class="output-card" style="border-left: 3px solid var(--cisco-blue);">
+                <div class="output-header">
+                  <strong style="color: var(--cisco-blue);">🤖 AI Diagnostic Inference</strong>
+                  <span id="ai-confidence-badge" class="badge severity-low">Confidence: High</span>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Identified Root Cause:</span>
+                  <p id="ai-root-cause" style="font-weight: 600; color: #fff; font-size: 0.95rem; margin-top: 0.2rem;"></p>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-bottom: 0.75rem; font-size: 0.825rem;">
+                  <div><span style="color: var(--text-dim);">OSI Layer:</span> <strong id="ai-osi-layer" style="color: #38bdf8;"></strong></div>
+                  <div><span style="color: var(--text-dim);">Domain Tag:</span> <strong id="ai-concept-tag" style="color: #34d399;"></strong></div>
+                </div>
+
+                <div style="margin-bottom: 0.75rem;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Quoted Line Evidence:</span>
+                  <div id="ai-evidence-list"></div>
+                </div>
+
+                <div style="margin-bottom: 0.75rem;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Recommended Next Command:</span>
+                  <div class="evidence-quote" id="ai-next-command" style="color: #38bdf8;"></div>
+                </div>
+
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Recommended Cisco IOS Fix Script:</span>
+                  <div class="cli-box" id="ai-fix-script"></div>
+                </div>
+
+                <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-dim);">
+                  <span>Safety Note: </span><span id="ai-safety-note"></span>
+                </div>
+
+                <!-- Human In The Loop Action Controls -->
+                <div class="review-actions">
+                  <button class="btn-accept" onclick="reviewCurrentDiagnosis('Accepted')">✅ Accept AI Fix</button>
+                  <button class="btn-edit" onclick="openEditModal()">✏️ Edit / Modify Fix</button>
+                  <button class="btn-reject" onclick="reviewCurrentDiagnosis('Rejected')">❌ Reject AI Fix</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: HUMAN REVIEW LOG ================= -->
+    <section id="tab-review" class="tab-pane">
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">🛡️ Responsible AI & Human Review Governance Log</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-secondary" onclick="exportReviewLog('csv')">Export CSV</button>
+            <button class="btn-secondary" onclick="exportReviewLog('json')">Export JSON</button>
+          </div>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+          Mandatory engineer verification audit trail. Network changes require explicit human oversight before execution on physical or simulated infrastructure.
+        </p>
+
+        <div class="table-responsive">
+          <table class="netsage-table" id="table-reviews">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Case</th>
+                <th>AI Proposal / Failure Mode</th>
+                <th>Human Verdict</th>
+                <th>Corrected Fix / Rationale</th>
+                <th>Outage Prevented</th>
+              </tr>
+            </thead>
+            <tbody id="reviews-tbody">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: GUIDED LAB DEMO ================= -->
+    <section id="tab-demo" class="tab-pane">
+      <div class="glass-panel">
+        <div class="panel-header">
+          <div class="panel-title">🎬 Interactive 5-Minute Packet Tracer Lab Demo</div>
+          <span class="badge badge-acl">Scenario: Inter-VLAN & Perimeter ACL Outage</span>
+        </div>
+
+        <!-- Stepper Nodes -->
+        <div class="stepper-container">
+          <div class="step-node active" id="step-node-1">1</div>
+          <div class="step-node" id="step-node-2">2</div>
+          <div class="step-node" id="step-node-3">3</div>
+          <div class="step-node" id="step-node-4">4</div>
+          <div class="step-node" id="step-node-5">5</div>
+        </div>
+
+        <!-- Step Content Panes -->
+        <div id="demo-step-1" class="demo-step-content">
+          <h3 style="color: var(--cisco-blue); margin-bottom: 0.75rem;">Step 1: The Broken Lab & Observable Symptom</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-muted);">
+            In a multi-subnet corporate branch topology, external clients report that they cannot connect to the DMZ Web Server (<code>192.168.1.100:80</code>). However, standard ICMP ping reaches the DMZ successfully.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="output-card">
+              <strong style="color: #fff;">Topology Architecture:</strong>
+              <ul style="margin-top: 0.5rem; margin-left: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+                <li>Router-1 Gi0/1 (WAN Gateway: <code>203.0.113.2/30</code>)</li>
+                <li>Router-1 Gi0/0 (DMZ Subnet: <code>192.168.1.0/24</code>)</li>
+                <li>DMZ Web Server IP: <code>192.168.1.100</code></li>
+                <li>Inbound ACL 101 applied on Gi0/1</li>
+              </ul>
+            </div>
+            <div class="output-card">
+              <strong style="color: #fff;">Symptom Output:</strong>
+              <div class="cli-box" style="margin-top: 0.5rem;">External-Client> ping 192.168.1.100
+Reply from 192.168.1.100: bytes=32 time=14ms TTL=127
+
+External-Client> curl http://192.168.1.100
+curl: (7) Failed to connect to 192.168.1.100 port 80: Connection timed out</div>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="advanceDemoStep(2)">Proceed to Step 2: Run NetSage AI Diagnosis &rarr;</button>
+        </div>
+
+        <div id="demo-step-2" class="demo-step-content" style="display: none;">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.75rem;">Step 2: NetSage AI Diagnostic & Rule Inspection</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-muted);">
+            NetSage extracts evidence from <code>show access-lists 101</code> and correlates it with the HTTP port 80 timeout symptom.
+          </p>
+          <div class="output-card" style="border-left: 3px solid var(--accent-amber); margin-bottom: 1rem;">
+            <strong style="color: var(--accent-amber);">Raw AI Diagnostic Proposal:</strong>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #fff;">
+              "Extended ACL 101 contains a deny rule on line 20 blocking TCP 80 traffic to 192.168.1.100."
+            </p>
+            <div style="margin-top: 0.5rem;">
+              <span style="font-size: 0.75rem; color: var(--accent-rose); font-weight: 700; text-transform: uppercase;">⚠️ Proposed Raw AI Fix:</span>
+              <div class="cli-box" style="color: #f87171;">Router-1(config)# no access-list 101
+Router-1(config)# access-list 101 permit ip any any</div>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="advanceDemoStep(3)">Proceed to Step 3: Human Review & Risk Assessment &rarr;</button>
+        </div>
+
+        <div id="demo-step-3" class="demo-step-content" style="display: none;">
+          <h3 style="color: var(--accent-amber); margin-bottom: 0.75rem;">Step 3: Human Network Engineer Safety Catch</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-muted);">
+            The human network engineer reviews the AI's proposal. Deleting the entire ACL 101 on a border router would remove firewall protection for the entire DMZ!
+          </p>
+          <div class="output-card" style="border-left: 3px solid var(--accent-emerald); margin-bottom: 1.5rem;">
+            <strong style="color: var(--accent-emerald);">Human Review Decision: EDITED (Surgical Sequence Fix)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Instead of deleting ACL 101, the engineer modifies only sequence line 20 in named extended ACL mode.
+            </p>
+            <div class="cli-box" style="color: #34d399; margin-top: 0.5rem;">Router-1(config)# ip access-list extended 101
+Router-1(config-ext-nacl)# no 20
+Router-1(config-ext-nacl)# 20 permit tcp any host 192.168.1.100 eq 80
+Router-1(config-ext-nacl)# end</div>
+          </div>
+          <button class="btn-primary" onclick="advanceDemoStep(4)">Proceed to Step 4: Apply Corrected IOS Commands &rarr;</button>
+        </div>
+
+        <div id="demo-step-4" class="demo-step-content" style="display: none;">
+          <h3 style="color: var(--accent-purple); margin-bottom: 0.75rem;">Step 4: Executing Remediated Cisco IOS Commands</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-muted);">
+            Remediation commands are applied to Router-1 CLI.
+          </p>
+          <div class="cli-box" style="margin-bottom: 1.5rem;">Router-1# configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router-1(config)# ip access-list extended 101
+Router-1(config-ext-nacl)# no 20
+Router-1(config-ext-nacl)# 20 permit tcp any host 192.168.1.100 eq 80
+Router-1(config-ext-nacl)# end
+Router-1# write memory
+[OK] - Configuration Committed</div>
+          <button class="btn-primary" onclick="advanceDemoStep(5)">Proceed to Step 5: Verification & Post-Fix Validation &rarr;</button>
+        </div>
+
+        <div id="demo-step-5" class="demo-step-content" style="display: none;">
+          <h3 style="color: var(--accent-emerald); margin-bottom: 0.75rem;">Step 5: Post-Fix Verification & Service Recovery</h3>
+          <p style="margin-bottom: 1rem; color: var(--text-muted);">
+            Verification commands confirm that HTTP requests now successfully reach the DMZ Web Server with 0% packet loss.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="output-card">
+              <strong style="color: #34d399;">Verification Output:</strong>
+              <div class="cli-box" style="margin-top: 0.5rem; color: #34d399;">External-Client> curl http://192.168.1.100
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 42
+
+&lt;html&gt;&lt;h1&gt;Welcome to Cisco DMZ&lt;/h1&gt;&lt;/html&gt;</div>
+            </div>
+            <div class="output-card">
+              <strong style="color: var(--cisco-blue);">Updated ACL Matches:</strong>
+              <div class="cli-box" style="margin-top: 0.5rem;">Router-1# show access-lists 101
+Extended IP access list 101
+    10 permit icmp any any (45 matches)
+    20 permit tcp any host 192.168.1.100 eq www (32 matches)
+    30 permit ip any any</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn-primary" onclick="resetDemo()">🔁 Restart Demo Walkthrough</button>
+            <button class="btn-secondary" onclick="switchTab('explorer')">Explore More Cases</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Edit Diagnosis Modal -->
+  <div id="edit-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div class="panel-title">✏️ Modify Diagnosis & Configuration Fix</div>
+        <button class="btn-secondary" onclick="closeEditModal()">✕ Close</button>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="edit-root-cause">Corrected Root Cause:</label>
+        <input type="text" id="edit-root-cause" class="search-input">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="edit-fix-script">Corrected Cisco IOS CLI Fix Script:</label>
+        <textarea id="edit-fix-script" class="code-textarea" style="min-height: 150px;"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="edit-engineer-notes">Engineer Review Notes & Rationale:</label>
+        <textarea id="edit-engineer-notes" class="search-input" style="min-height: 80px;" placeholder="Explain why the raw AI diagnosis needed editing (e.g., safety risk, wrong subnet, syntax error)..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+        <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveEditedReview()">Save & Mark as EDITED</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Detail Modal -->
+  <div id="case-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div class="panel-title" id="modal-case-title">Case Details</div>
+        <button class="btn-secondary" onclick="closeCaseModal()">✕ Close</button>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+        <span id="modal-case-id" class="badge badge-vlan"></span>
+        <span id="modal-case-layer" class="badge badge-gateway"></span>
+        <span id="modal-case-severity" class="badge severity-high"></span>
+      </div>
+
+      <div class="output-card">
+        <strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Symptom:</strong>
+        <p id="modal-case-symptom" style="margin-top: 0.25rem; font-weight: 600; color: #fff;"></p>
+      </div>
+
+      <div class="output-card">
+        <strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Topology:</strong>
+        <p id="modal-case-topology" style="margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem;"></p>
+      </div>
+
+      <div class="output-card">
+        <strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Cisco Show Outputs:</strong>
+        <div class="cli-box" id="modal-case-show-outputs"></div>
+      </div>
+
+      <div class="output-card" style="border-left: 3px solid var(--accent-emerald);">
+        <strong style="color: var(--accent-emerald); font-size: 0.8rem; text-transform: uppercase;">Expected Fault (Ground Truth):</strong>
+        <p id="modal-case-fault" style="margin-top: 0.25rem; font-weight: 600; color: #fff;"></p>
+        
+        <strong style="color: var(--accent-emerald); font-size: 0.8rem; text-transform: uppercase; display: block; margin-top: 0.75rem;">Suggested Fix:</strong>
+        <div class="cli-box" id="modal-case-fix" style="color: #34d399;"></div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+        <button class="btn-secondary" onclick="closeCaseModal()">Close</button>
+        <button class="btn-primary" onclick="loadCaseIntoSandboxFromModal()">⚡ Load into Live Sandbox</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div>NetSage AI &bull; Applied AI + Network Troubleshooting System &bull; Cisco Lab Edition</div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
