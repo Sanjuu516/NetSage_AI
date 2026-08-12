@@ -112,4 +112,3 @@ NetSage AI guarantees that **no command touches network infrastructure without a
 ## 👥 Team
 * **Course**: Modern AI
 * **Domain**: Applied AI + Network Troubleshooting (Cisco Networking Labs)
-* **Team Size**: 2-3 students
