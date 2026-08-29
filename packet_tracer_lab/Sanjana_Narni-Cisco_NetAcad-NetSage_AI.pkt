@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8'?>
+<PACKETTRACER_FILE version="8.2.0">
+  <METADATA>
+    <PROJECT_NAME>NetSage AI Troubleshooting Lab</PROJECT_NAME>
+    <STUDENT_NAME>Sanjana Narni</STUDENT_NAME>
+    <COLLEGE_NAME>Cisco Networking Academy</COLLEGE_NAME>
+    <TECHNOLOGY>Applied AI + Network Troubleshooting</TECHNOLOGY>
+  </METADATA>
+  <NETWORK_TOPOLOGY>
+    <DEVICE id="R1" name="Router-1" type="ROUTER">
+      <POS_X>400</POS_X>
+      <POS_Y>150</POS_Y>
+      <STARTUP_CONFIG>hostname Router-1
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ ip nat inside
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ ip nat inside
+interface GigabitEthernet0/0.40
+ encapsulation dot1Q 40
+ ip address 172.16.40.1 255.255.255.0
+ ip access-group GUEST_ISOLATION in
+interface GigabitEthernet0/1
+ ip address 203.0.113.2 255.255.255.252
+ ip access-group 101 in
+ ip nat outside
+interface GigabitEthernet0/2
+ ip address 192.168.1.1 255.255.255.0
+ ip nat inside
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+access-list 1 permit 192.168.10.0 0.0.0.255
+access-list 1 permit 192.168.20.0 0.0.0.255
+ip access-list extended 101
+ permit icmp any any
+ 20 permit tcp any host 192.168.1.100 eq www
+ permit ip any any
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+router ospf 1
+ network 192.168.10.0 0.0.0.255 area 0
+ network 192.168.20.0 0.0.0.255 area 0
+end</STARTUP_CONFIG>
+    </DEVICE>
+    <DEVICE id="SW1" name="Switch-1" type="SWITCH">
+      <POS_X>400</POS_X>
+      <POS_Y>300</POS_Y>
+      <STARTUP_CONFIG>hostname Switch-1
+vlan 10
+ name Sales
+vlan 20
+ name Marketing
+vlan 30
+ name Engineering
+vlan 40
+ name Guest-Wireless
+vlan 50
+ name Server-Farm
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk native vlan 1
+ switchport trunk allowed vlan 10,20,30,40,50
+interface GigabitEthernet0/2
+ switchport mode trunk
+ switchport trunk native vlan 1
+end</STARTUP_CONFIG>
+    </DEVICE>
+    <DEVICE id="SW2" name="Switch-2" type="SWITCH">
+      <POS_X>600</POS_X>
+      <POS_Y>300</POS_Y>
+    </DEVICE>
+    <DEVICE id="PCA" name="PC-A" type="HOST">
+      <POS_X>250</POS_X>
+      <POS_Y>450</POS_Y>
+      <IP_ADDRESS>192.168.10.10</IP_ADDRESS>
+      <DEFAULT_GATEWAY>192.168.10.1</DEFAULT_GATEWAY>
+    </DEVICE>
+    <DEVICE id="PCB" name="PC-B" type="HOST">
+      <POS_X>400</POS_X>
+      <POS_Y>450</POS_Y>
+      <IP_ADDRESS>192.168.20.10</IP_ADDRESS>
+      <DEFAULT_GATEWAY>192.168.20.1</DEFAULT_GATEWAY>
+    </DEVICE>
+    <DEVICE id="PCC" name="PC-C" type="HOST">
+      <POS_X>600</POS_X>
+      <POS_Y>450</POS_Y>
+      <IP_ADDRESS>192.168.30.10</IP_ADDRESS>
+      <DEFAULT_GATEWAY>192.168.30.1</DEFAULT_GATEWAY>
+    </DEVICE>
+    <DEVICE id="SERVER" name="DMZ-Web-Server" type="SERVER">
+      <POS_X>200</POS_X>
+      <POS_Y>150</POS_Y>
+      <IP_ADDRESS>192.168.1.100</IP_ADDRESS>
+      <DEFAULT_GATEWAY>192.168.1.1</DEFAULT_GATEWAY>
+    </DEVICE>
+    <DEVICE id="ISP" name="ISP-Gateway" type="ROUTER">
+      <POS_X>600</POS_X>
+      <POS_Y>150</POS_Y>
+      <IP_ADDRESS>203.0.113.1/30</IP_ADDRESS>
+    </DEVICE>
+  </NETWORK_TOPOLOGY>
+</PACKETTRACER_FILE>
