@@ -73,11 +73,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-VLAN-04",
-          "title": "Access Port in Wrong VLAN (VLAN 20 - Marketing)",
+          "title": "Access Switchport Mapped to Wrong VLAN (20 - Marketing)",
           "severity": "High",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "VLAN",
-          "description": "Switchport is configured in VLAN 20 (Marketing), but host belongs to Sales (VLAN 10).",
+          "description": "Switchport is mapped to VLAN 20 (Marketing) instead of target Sales VLAN 10.",
           "evidence": [
             "Access Mode VLAN: 20 (Marketing)"
           ],
@@ -120,11 +120,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-VLAN-02",
-          "title": "Missing VLAN 30 in Switch Database",
+          "title": "VLAN 30 Missing from Switch VLAN Database",
           "severity": "Critical",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "VLAN",
-          "description": "VLAN 30 has not been created in the local switch VLAN database, rendering ports assigned to it inactive.",
+          "description": "VLAN 30 is not created in the switch VLAN database, causing assigned switchports to stay inactive.",
           "evidence": [
             "VLAN 30 is inactive or not found in switch database"
           ],
@@ -167,14 +167,13 @@
       "rule_findings": [
         {
           "rule_id": "RULE-VLAN-01",
-          "title": "802.1Q Trunk Native VLAN Mismatch",
+          "title": "802.1Q Trunk Native VLAN Tag Mismatch",
           "severity": "Medium",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "VLAN",
-          "description": "The connecting switches have mismatched Native VLANs on an 802.1Q trunk link, which causes untagged traffic leakage and CDP alerts.",
+          "description": "Connected switch trunk endpoints have conflicting native VLAN tag IDs, causing untagged frame leakage.",
           "evidence": [
-            "%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (1), with Switch-A GigabitEthernet0/1 (10).",
-            "Discovered Native VLAN values: 10, 1"
+            "%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (1), with Switch-A GigabitEthernet0/1 (10)."
           ],
           "suggested_fix": "interface <trunk-interface>\n switchport trunk native vlan <matching-vlan-id>\n end"
         }
@@ -219,7 +218,7 @@
           "severity": "High",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "VLAN",
-          "description": "Trunk port Gi0/1 only permits VLANs 10,30,40, explicitly filtering out required VLAN 20.",
+          "description": "Trunk port Gi0/1 allowed list (10,30,40) excludes required VLAN 20.",
           "evidence": [
             "Trunk Gi0/1 allowed VLANs: 10,30,40 (excludes VLAN 20)"
           ],
@@ -262,16 +261,16 @@
       "rule_findings": [
         {
           "rule_id": "RULE-GW-01",
-          "title": "Wrong Default Gateway Configured (192.168.1.254)",
+          "title": "Host Misconfigured with Invalid Default Gateway (192.168.1.254)",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "GATEWAY",
-          "description": "Client is configured with default gateway 192.168.1.254, but router gateway interface is 192.168.1.1.",
+          "description": "Client is configured with gateway 192.168.1.254, but active router interface IP is 192.168.1.1.",
           "evidence": [
-            "Client Default Gateway: 192.168.1.254",
+            "Client Gateway: 192.168.1.254",
             "Router Interface IP: 192.168.1.1"
           ],
-          "suggested_fix": "Update client default gateway to 192.168.1.1."
+          "suggested_fix": "ipconfig <ip> 255.255.255.0 192.168.1.1"
         }
       ],
       "ai_diagnosis": {
@@ -306,11 +305,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-GW-02",
-          "title": "Subnet Mask Mismatch Between Host and Router Gateway",
+          "title": "Subnet Mask Mismatch (/25 Host vs /24 Router Gateway)",
           "severity": "Medium",
           "osi_layer": "Layer 3 - Network",
           "concept": "GATEWAY",
-          "description": "Host is using a /25 mask (255.255.255.128) while router interface uses /24 (255.255.255.0), splitting the broadcast domain.",
+          "description": "Host mask 255.255.255.128 (/25) splits the subnet and creates reachability failures.",
           "evidence": [
             "Host Mask: 255.255.255.128",
             "Router Prefix: /24"
@@ -350,11 +349,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-IF-01",
-          "title": "Interface GigabitEthernet0/0.10 Administratively Shutdown",
+          "title": "Interface GigabitEthernet0/0.10 Disabled (Administratively Shutdown)",
           "severity": "Critical",
           "osi_layer": "Layer 1 - Physical",
           "concept": "SWITCHING",
-          "description": "Interface GigabitEthernet0/0.10 is administratively disabled with 'shutdown' command.",
+          "description": "Interface GigabitEthernet0/0.10 has been manually disabled with 'shutdown' command.",
           "evidence": [
             "GigabitEthernet0/0.10 is administratively down, line protocol is down"
           ],
@@ -399,11 +398,11 @@
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "GATEWAY",
-          "description": "IP address 192.168.1.20 is claimed by multiple distinct MAC addresses: 0001.9654.2222, 0001.9654.1111.",
+          "description": "IP address 192.168.1.20 is claimed by multiple distinct MAC addresses (0001.9654.2222, 0001.9654.1111).",
           "evidence": [
             "ARP table shows multiple MACs for 192.168.1.20: 0001.9654.2222, 0001.9654.1111"
           ],
-          "suggested_fix": "Reconfigure one of the conflicting hosts with a unique IP address in the subnet."
+          "suggested_fix": "Assign a unique static IP address to the conflicting host."
         }
       ],
       "ai_diagnosis": {
@@ -438,14 +437,14 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DHCP-01",
-          "title": "Missing 'ip helper-address' for DHCP Relay",
+          "title": "Missing 'ip helper-address' for DHCP Broadcast Relay",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "DHCP",
-          "description": "Clients fail to obtain DHCP lease because router interface does not have 'ip helper-address' configured to forward DHCP broadcasts across subnets.",
+          "description": "Clients receive APIPA 169.254.x.x because router sub-interface lacks 'ip helper-address'.",
           "evidence": [
             "Client assigned APIPA 169.254.x.x",
-            "Router sub-interface lacks 'ip helper-address'"
+            "Router interface missing ip helper-address"
           ],
           "suggested_fix": "interface <sub-interface>\n ip helper-address <dhcp-server-ip>\n end"
         }
@@ -484,14 +483,14 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DHCP-02",
-          "title": "DHCP Pool Missing Excluded-Address for Gateway (192.168.1.1)",
+          "title": "DHCP Pool Missing Excluded-Address Range for Gateway (192.168.1.1)",
           "severity": "Critical",
           "osi_layer": "Layer 7 - Application",
           "concept": "DHCP",
-          "description": "DHCP pool does not exclude default gateway IP 192.168.1.1, causing the router to lease its own gateway IP to a client.",
+          "description": "DHCP pool leases default gateway IP 192.168.1.1 to client PC because excluded-address is missing.",
           "evidence": [
-            "Default-router is 192.168.1.1",
-            "DHCP binding leased 192.168.1.1 to a client"
+            "Default-router: 192.168.1.1",
+            "Leased IP: 192.168.1.1"
           ],
           "suggested_fix": "ip dhcp excluded-address 192.168.1.1\n clear ip dhcp binding 192.168.1.1\n end"
         }
@@ -529,7 +528,7 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DHCP-03",
-          "title": "Invalid Default-Router in DHCP Pool",
+          "title": "Invalid Default-Router IP in DHCP Pool Configuration",
           "severity": "High",
           "osi_layer": "Layer 7 - Application",
           "concept": "DHCP",
@@ -537,7 +536,7 @@
           "evidence": [
             "default-router 172.16.10.254"
           ],
-          "suggested_fix": "ip dhcp pool <name>\n default-router 172.16.10.1\n end"
+          "suggested_fix": "ip dhcp pool <pool-name>\n default-router 172.16.10.1\n end"
         }
       ],
       "ai_diagnosis": {
@@ -574,11 +573,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DHCP-04",
-          "title": "DHCP Snooping Dropping Packets on Untrusted Port GigabitEthernet0/1",
+          "title": "DHCP Snooping Dropping DHCPOFFER Packets on Untrusted Uplink (GigabitEthernet0/1)",
           "severity": "High",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "DHCP",
-          "description": "Switch DHCP Snooping is active, but uplink port GigabitEthernet0/1 is not configured as trusted, blocking incoming DHCPOFFER packets.",
+          "description": "Switch uplink port GigabitEthernet0/1 is not configured with 'ip dhcp snooping trust', dropping DHCP offers.",
           "evidence": [
             "DHCP packet dropped on untrusted port GigabitEthernet0/1"
           ],
@@ -620,7 +619,7 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DNS-02",
-          "title": "Client Configured with Invalid DNS Server IP (192.168.1.100)",
+          "title": "Client Misconfigured with Invalid DNS Server IP (192.168.1.100)",
           "severity": "High",
           "osi_layer": "Layer 7 - Application",
           "concept": "DNS",
@@ -667,15 +666,15 @@
       "rule_findings": [
         {
           "rule_id": "RULE-DNS-01",
-          "title": "DNS Service Disabled on Target Server",
+          "title": "DNS Service State Toggled OFF on Target Server Appliance",
           "severity": "Medium",
           "osi_layer": "Layer 7 - Application",
           "concept": "DNS",
-          "description": "The target server appliance has its DNS service toggled OFF, failing all incoming name resolution queries.",
+          "description": "DNS service is turned OFF on the server appliance, failing name resolution requests.",
           "evidence": [
             "show services -> DNS OFF"
           ],
-          "suggested_fix": "Turn ON DNS service in Server Services Tab and ensure 'A' record is added."
+          "suggested_fix": "Turn ON DNS service in Server Services Tab and add A record for domain."
         }
       ],
       "ai_diagnosis": {
@@ -710,11 +709,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-ROUTE-01",
-          "title": "Missing Default Route (0.0.0.0/0)",
+          "title": "Missing Default Gateway Route (0.0.0.0 0.0.0.0)",
           "severity": "Critical",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "Edge router has no Gateway of Last Resort (0.0.0.0/0), preventing any external or internet traffic forwarding.",
+          "description": "Edge router lacks a default static route ('0.0.0.0/0'), failing external traffic forwarding.",
           "evidence": [
             "Gateway of last resort is not set"
           ],
@@ -754,11 +753,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-OSPF-01",
-          "title": "OSPF Passive Interface Configured on Peer Link (GigabitEthernet0/0)",
+          "title": "OSPF Passive Interface Enabled on Peer Link (GigabitEthernet0/0)",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "GigabitEthernet0/0 is configured as passive-interface, suppressing OSPF Hello exchange and blocking neighbor adjacency.",
+          "description": "Interface GigabitEthernet0/0 is marked passive, suppressing OSPF Hello exchanges with neighbor.",
           "evidence": [
             "GigabitEthernet0/0 -> Passive interface",
             "show ip ospf neighbor -> (Empty)"
@@ -800,11 +799,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-OSPF-02",
-          "title": "OSPF Area ID Mismatch Between Neighbors",
+          "title": "OSPF Area ID Mismatch Across Neighbor Interconnect Link",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "Connected OSPF routers have conflicting Area IDs configured for the interconnecting link, preventing adjacency.",
+          "description": "Connected OSPF routers have mismatched Area IDs configured on interconnect link.",
           "evidence": [
             "%OSPF-4-ERRRCV: Received packet with invalid area ID 0.0.0.1 from 192.168.12.2 on GigabitEthernet0/1 (Area 0.0.0.0 expected)"
           ],
@@ -846,11 +845,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-OSPF-03",
-          "title": "OSPF MTU Mismatch Causing EXSTART/EXCHANGE Lock",
+          "title": "OSPF MTU Mismatch Stalling Adjacency in EXSTART State",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "OSPF neighbors have mismatched MTU values (1400, 1500 bytes) on the link, stalling database exchange in EXSTART state.",
+          "description": "Mismatched link MTUs (1400, 1500 bytes) prevent OSPF DBD packet exchange.",
           "evidence": [
             "Neighbor state: EXSTART",
             "Detected MTU values: 1400, 1500"
@@ -896,7 +895,7 @@
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "Static route for 192.168.50.0/255.255.255.0 specifies next-hop 10.0.0.6 which is not present in the routing table.",
+          "description": "Static route for 192.168.50.0/255.255.255.0 points to next-hop 10.0.0.6 which is not in the routing table.",
           "evidence": [
             "ip route 192.168.50.0 255.255.255.0 10.0.0.6",
             "% Subnet 10.0.0.6 not in table"
@@ -938,7 +937,7 @@
       "rule_findings": [
         {
           "rule_id": "RULE-ACL-01",
-          "title": "Access List Deny Rule Dropping Traffic",
+          "title": "Access List Deny Sequence Dropping Active Traffic",
           "severity": "High",
           "osi_layer": "Layer 4 - Transport",
           "concept": "ACL",
@@ -946,7 +945,7 @@
           "evidence": [
             "ACL rule: 20 deny tcp any host 192.168.1.100 eq www (128 matches)"
           ],
-          "suggested_fix": "Modify ACL to permit necessary source/destination traffic."
+          "suggested_fix": "Modify ACL sequence line to permit target traffic."
         }
       ],
       "ai_diagnosis": {
@@ -989,7 +988,7 @@
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ACL",
-          "description": "Standard ACL permits only a single host IP and hits implicit deny all for remaining subnet hosts.",
+          "description": "Standard ACL permits only a single management IP, hitting implicit deny for remaining subnet hosts.",
           "evidence": [
             "Standard IP access list FILTER_MGMT",
             "(implicit deny any matches: 412)"
@@ -1031,7 +1030,7 @@
       "rule_findings": [
         {
           "rule_id": "RULE-ACL-01",
-          "title": "Access List Deny Rule Dropping Traffic",
+          "title": "Access List Deny Sequence Dropping Active Traffic",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "ACL",
@@ -1039,20 +1038,20 @@
           "evidence": [
             "ACL rule: 20 deny ip any any (530 matches)"
           ],
-          "suggested_fix": "Modify ACL to permit necessary source/destination traffic."
+          "suggested_fix": "Modify ACL sequence line to permit target traffic."
         },
         {
           "rule_id": "RULE-ACL-02",
-          "title": "ACL Applied in Wrong Direction on Router Interface",
+          "title": "ACL Bound in Wrong Direction on Router Interface (Outbound vs Inbound)",
           "severity": "Critical",
           "osi_layer": "Layer 3 - Network",
           "concept": "ACL",
-          "description": "ACL is filtering outbound on internal LAN interface, blocking all egress traffic from internal hosts.",
+          "description": "ACL 105 is bound outbound on LAN interface Gi0/0, blocking all internal LAN egress traffic.",
           "evidence": [
             "Outbound access list is 105",
             "20 deny ip any any (530 matches)"
           ],
-          "suggested_fix": "interface <lan-intf>\n no ip access-group 105 out\n interface <wan-intf>\n ip access-group 105 in\n end"
+          "suggested_fix": "interface Gi0/0\n no ip access-group 105 out\n interface Gi0/1\n ip access-group 105 in\n end"
         }
       ],
       "ai_diagnosis": {
@@ -1091,11 +1090,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-NAT-01",
-          "title": "NAT Inside and Outside Interfaces Inverted",
+          "title": "NAT Inside and Outside Interfaces Reversed",
           "severity": "Critical",
           "osi_layer": "Layer 3 - Network",
           "concept": "NAT",
-          "description": "LAN interface is erroneously marked as 'ip nat outside' while WAN interface is marked as 'ip nat inside'.",
+          "description": "LAN interface is set to 'ip nat outside' and WAN interface to 'ip nat inside'.",
           "evidence": [
             "interface Gi0/0: ip nat outside",
             "interface Gi0/1: ip nat inside"
@@ -1141,11 +1140,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-NAT-03",
-          "title": "NAT ACL Missing Permitted Subnet",
+          "title": "NAT Source Access List Missing Permitted Subnet",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "NAT",
-          "description": "The standard ACL referenced by NAT overload only permits VLAN 10 (192.168.10.0/24) and lacks an ACE for VLAN 20 (192.168.20.0/24).",
+          "description": "Standard ACL referenced by NAT overload only permits VLAN 10 and excludes VLAN 20 subnet.",
           "evidence": [
             "Standard IP access list 1: 10 permit 192.168.10.0, wildcard bits 0.0.0.255"
           ],
@@ -1185,11 +1184,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-NAT-02",
-          "title": "NAT Statement Missing 'overload' (PAT) Keyword",
+          "title": "Dynamic NAT Statement Missing 'overload' (PAT) Keyword",
           "severity": "Critical",
           "osi_layer": "Layer 3 - Network",
           "concept": "NAT",
-          "description": "Dynamic NAT statement lacks 'overload' keyword, restricting translation to only 1 simultaneous host on a single public IP.",
+          "description": "Dynamic NAT lacks 'overload' keyword, restricting translation to a single simultaneous public IP translation.",
           "evidence": [
             "ip nat inside source list 10 interface GigabitEthernet0/1 (missing overload)"
           ],
@@ -1230,13 +1229,13 @@
       "rule_findings": [
         {
           "rule_id": "RULE-WLAN-01",
-          "title": "Missing Guest Wi-Fi Isolation Access Control List",
+          "title": "Missing Guest Wi-Fi Subnet Isolation ACL",
           "severity": "High",
           "osi_layer": "Layer 4 - Transport",
           "concept": "WIRELESS",
-          "description": "Guest Wi-Fi subnet has uninhibited inter-VLAN routing access to internal corporate subnets due to missing isolation ACL.",
+          "description": "Guest Wi-Fi subnet has uninhibited inter-VLAN routing access to internal corporate subnets.",
           "evidence": [
-            "Guest laptop successfully pinged internal 10.10.50.10",
+            "Guest laptop pinged internal 10.10.50.10",
             "No access list named GUEST_ISOLATION"
           ],
           "suggested_fix": "ip access-list extended GUEST_ISOLATION\n permit udp any any eq bootps\n permit udp any any eq domain\n deny ip 172.16.40.0 0.0.0.255 10.0.0.0 0.255.255.255\n permit ip 172.16.40.0 0.0.0.255 any\n interface GigabitEthernet0/0.40\n ip access-group GUEST_ISOLATION in\n end"
@@ -1333,15 +1332,14 @@
       "rule_findings": [
         {
           "rule_id": "RULE-L1-02",
-          "title": "Duplex Mismatch on FastEthernet0/24",
+          "title": "Duplex Negotiation Mismatch on FastEthernet0/24",
           "severity": "Medium",
           "osi_layer": "Layer 1 - Physical",
           "concept": "SWITCHING",
-          "description": "FastEthernet0/24 is running in Half-Duplex mode experiencing late collisions and input errors due to duplex mismatch with connected endpoint.",
+          "description": "Interface FastEthernet0/24 is operating in Half-Duplex mode while connected server NIC uses Full-Duplex, accumulating late collisions.",
           "evidence": [
-            "FastEthernet0/24 is configured Half-duplex with excessive errors/collisions:",
-            "389211 late collisions detected",
-            "582914 input errors detected"
+            "FastEthernet0/24 forced Half-duplex",
+            "late collision and CRC error counters incrementing"
           ],
           "suggested_fix": "interface FastEthernet0/24\n duplex full\n speed 100\n end"
         }
@@ -1381,11 +1379,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-IF-01",
-          "title": "Interface FastEthernet0/10 Administratively Shutdown",
+          "title": "Interface FastEthernet0/10 Disabled (Administratively Shutdown)",
           "severity": "Critical",
           "osi_layer": "Layer 1 - Physical",
           "concept": "SWITCHING",
-          "description": "Interface FastEthernet0/10 is administratively disabled with 'shutdown' command.",
+          "description": "Interface FastEthernet0/10 has been manually disabled with 'shutdown' command.",
           "evidence": [
             "FastEthernet0/10 is administratively down, line protocol is down"
           ],
@@ -1427,11 +1425,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-VLAN-02",
-          "title": "Missing VLAN 55 in Switch Database",
+          "title": "VLAN 55 Missing from Switch VLAN Database",
           "severity": "Critical",
           "osi_layer": "Layer 2 - Data Link",
           "concept": "VLAN",
-          "description": "VLAN 55 has not been created in the local switch VLAN database, rendering ports assigned to it inactive.",
+          "description": "VLAN 55 is not created in the switch VLAN database, causing assigned switchports to stay inactive.",
           "evidence": [
             "VLAN 55 is inactive or not found in switch database"
           ],
@@ -1474,11 +1472,11 @@
       "rule_findings": [
         {
           "rule_id": "RULE-ROUTE-03",
-          "title": "RIP Version 1 / 2 Mismatch (Classless Subnet Discard)",
+          "title": "RIP Version 1 vs Version 2 Mismatch (VLSM Discard)",
           "severity": "Medium",
           "osi_layer": "Layer 3 - Network",
           "concept": "ROUTING",
-          "description": "Peer router is running RIPv1 (classful) which discards variable-length subnet mask (VLSM) updates sent by RIPv2 neighbor.",
+          "description": "Peer router runs RIPv1 (classful), discarding VLSM subnet updates sent by RIPv2 router.",
           "evidence": [
             "Default version control: send version 1, receive version 1"
           ],
@@ -1520,16 +1518,16 @@
       "rule_findings": [
         {
           "rule_id": "RULE-HSRP-01",
-          "title": "Host Default Gateway Mismatches HSRP Virtual IP (192.168.1.254)",
+          "title": "Host Gateway Mismatches HSRP Virtual IP (192.168.1.254)",
           "severity": "High",
           "osi_layer": "Layer 3 - Network",
           "concept": "GATEWAY",
-          "description": "Client is configured with physical router IP 192.168.1.1 instead of HSRP Virtual IP 192.168.1.254, causing complete outage when primary router fails.",
+          "description": "Client is configured with physical router IP 192.168.1.1 instead of HSRP Virtual IP 192.168.1.254.",
           "evidence": [
-            "Client Default Gateway: 192.168.1.1",
+            "Client Gateway: 192.168.1.1",
             "HSRP Virtual IP: 192.168.1.254"
           ],
-          "suggested_fix": "Configure client default gateway to HSRP Virtual IP 192.168.1.254."
+          "suggested_fix": "Reconfigure host default gateway to HSRP Virtual IP 192.168.1.254."
         }
       ],
       "ai_diagnosis": {
